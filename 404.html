@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#050913" />
+  <title>MindMelt Beta 2.0</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="logo.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <button class="icon-button profile-button" id="menuButton" aria-label="Open profile and settings">👤</button>
+      <div class="mini-brand"><img src="logo.svg" alt=""/><span>MindMelt</span></div>
+      <button class="icon-button" id="settingsButton" aria-label="Open profile and settings">⚙</button>
+    </header>
+
+    <main class="dashboard" id="dashboard">
+      <section class="hero" aria-label="MindMelt home">
+        <img class="hero-logo" src="logo.svg" alt="MindMelt logo" />
+        <h1>MindMelt</h1>
+        <p class="headline">Designed by Neurodivergents, for Neurodivergents.</p>
+        <p class="tagline">Capture. Organize. Focus.</p>
+      </section>
+
+      <form class="entry-card" id="entryForm" autocomplete="off">
+        <button class="add-button" type="submit" aria-label="Capture entry">＋</button>
+        <input id="entryInput" name="entry" type="text" placeholder="Type literally anything..." aria-label="Universal MindMelt entry" />
+        <button class="mic-button" type="button" id="voiceButton" aria-label="Voice input">🎙</button>
+      </form>
+
+      <section class="focus-card" id="focusArea" aria-live="polite">
+        <div class="focus-empty">
+          <div class="spark">✦</div>
+          <h2>Your Mind. Organized.</h2>
+          <p>Enter something above and I’ll take care of the rest.</p>
+          <div class="quick-examples">
+            <button data-example="Need cat food tomorrow">Need cat food tomorrow</button>
+            <button data-example="Do I have plans tonight?">Do I have plans tonight?</button>
+            <button data-example="Melt it: call Dan, buy cat food, schedule dentist, watch Dune Part Two">Melt it</button>
+          </div>
+        </div>
+      </section>
+
+      <nav class="dock" aria-label="MindMelt categories">
+        <button data-view="calendar" class="dock-item"><span class="dock-icon">📅</span><span class="dock-label">Calendar</span><span class="dock-count" id="count-calendar">0</span></button>
+        <button data-view="tasks" class="dock-item"><span class="dock-icon">✓</span><span class="dock-label">Tasks</span><span class="dock-count" id="count-tasks">0</span></button>
+        <button data-view="ideas" class="dock-item"><span class="dock-icon">💡</span><span class="dock-label">Ideas</span><span class="dock-count" id="count-ideas">0</span></button>
+        <button data-view="recommendations" class="dock-item"><span class="dock-icon">☆</span><span class="dock-label">Recs</span><span class="dock-count" id="count-recommendations">0</span></button>
+        <button data-view="notes" class="dock-item"><span class="dock-icon">📝</span><span class="dock-label">Notes</span><span class="dock-count" id="count-notes">0</span></button>
+        <button data-view="brainDump" class="dock-item"><span class="dock-icon">🧠</span><span class="dock-label">Dump</span><span class="dock-count alert" id="count-brainDump">0</span></button>
+      </nav>
+
+      <section class="ticker" aria-label="Reframe ticker">
+        <span>Reframe ticker</span>
+        <div class="ticker-window"><p id="tickerText">One tiny next step is enough.</p></div>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="settingsDialog" class="profile-settings-dialog">
+    <form method="dialog" class="dialog-card profile-settings-card">
+      <div class="settings-header">
+        <div>
+          <p class="eyebrow">Profile & Settings</p>
+          <h2>MindMelt Control Centre</h2>
+          <p class="muted">Your profile, reminders, productivity review, and local backup tools in one low-friction place.</p>
+        </div>
+        <button class="close-x" value="close" aria-label="Close profile and settings">×</button>
+      </div>
+
+      <div class="settings-grid">
+        <section class="settings-section">
+          <h3>Profile</h3>
+          <label>Name<input id="profileNameInput" type="text" placeholder="Your name" /></label>
+          <label>Email optional<input id="profileEmailInput" type="email" placeholder="you@example.com" /></label>
+          <label>Member status<input id="profileStatusInput" type="text" placeholder="Beta tester" /></label>
+          <button type="button" id="saveProfileButton">Save profile</button>
+        </section>
+
+        <section class="settings-section">
+          <h3>Notifications</h3>
+          <p class="muted" id="notificationStatus">Notifications are off.</p>
+          <label>Reminder lead time
+            <select id="notificationLeadSelect">
+              <option value="15">15 minutes before</option>
+              <option value="30">30 minutes before</option>
+              <option value="60">1 hour before</option>
+              <option value="120">2 hours before</option>
+              <option value="1440">1 day before</option>
+            </select>
+          </label>
+          <label>Reminder style
+            <select id="notificationPresetSelect">
+              <option value="minimal">Minimal / low pressure</option>
+              <option value="balanced">Balanced</option>
+              <option value="extra">Extra reminders</option>
+            </select>
+          </label>
+          <label class="check-row"><input id="calendarReminderToggle" type="checkbox" checked /> Calendar reminders</label>
+          <label class="check-row"><input id="taskReminderToggle" type="checkbox" checked /> Task reminders</label>
+          <div class="dialog-actions compact-actions">
+            <button type="button" id="enableNotificationsButton">Enable reminders</button>
+            <button type="button" id="testNotificationButton">Test reminder</button>
+            <button type="button" id="saveNotificationSetupButton">Save notification setup</button>
+          </div>
+        </section>
+
+        <section class="settings-section">
+          <h3>Weekly review</h3>
+          <label>Message day
+            <select id="settingsWeeklyDaySelect">
+              <option>Sunday</option><option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option><option>Saturday</option>
+            </select>
+          </label>
+          <label>Message time<input id="settingsWeeklyTimeInput" type="text" placeholder="7:00 PM" /></label>
+          <label>Tone
+            <select id="reviewToneSelect">
+              <option value="encouraging">Encouraging</option>
+              <option value="balanced">Balanced</option>
+              <option value="direct">Direct but kind</option>
+            </select>
+          </label>
+          <button type="button" id="saveReviewSettingsButton">Save review settings</button>
+        </section>
+
+        <section class="settings-section">
+          <h3>Calendar defaults</h3>
+          <label>Default event length
+            <select id="defaultEventLengthSelect">
+              <option value="30">30 minutes</option>
+              <option value="60">1 hour</option>
+              <option value="90">90 minutes</option>
+              <option value="120">2 hours</option>
+            </select>
+          </label>
+          <label>Workday starts<input id="workdayStartInput" type="text" placeholder="9:00 AM" /></label>
+          <label>Workday ends<input id="workdayEndInput" type="text" placeholder="5:00 PM" /></label>
+          <label>Uncertain synced events
+            <select id="calendarSyncModeSelect">
+              <option value="ask">Ask me one at a time</option>
+              <option value="calendar">Place on calendar</option>
+              <option value="brainDump">Hold in Brain Dump</option>
+            </select>
+          </label>
+          <button type="button" id="saveCalendarDefaultsButton">Save calendar defaults</button>
+        </section>
+
+
+        <section class="settings-section full-span">
+          <h3>Calendar Connections</h3>
+          <p class="muted">Beta 2.0 adds the connection hub for Google Calendar, Apple Calendar, and Outlook. True live sync needs provider authorization later; this static beta can import .ics calendar files now.</p>
+          <div class="connection-grid">
+            <div class="connection-card"><strong>Google Calendar</strong><span id="googleConnectionStatus">Not connected</span><button type="button" id="connectGoogleButton">Toggle beta connection</button></div>
+            <div class="connection-card"><strong>Apple Calendar</strong><span id="appleConnectionStatus">Not connected</span><button type="button" id="connectAppleButton">Toggle beta connection</button></div>
+            <div class="connection-card"><strong>Outlook / Microsoft 365</strong><span id="outlookConnectionStatus">Not connected</span><button type="button" id="connectOutlookButton">Toggle beta connection</button></div>
+          </div>
+          <div class="dialog-actions compact-actions" style="margin-top:12px">
+            <button type="button" id="icsImportButton">Import calendar .ics</button>
+          </div>
+          <input type="file" id="icsFileInput" accept=".ics,text/calendar" hidden />
+        </section>
+        <section class="settings-section full-span">
+          <h3>Data & backup</h3>
+          <p class="muted">This deploy-safe beta stores data locally in this browser. Export before clearing browser storage or moving devices.</p>
+          <div class="dialog-actions compact-actions">
+            <button type="button" id="exportButton">Export JSON</button>
+            <button type="button" id="importButton">Import JSON</button>
+            <button type="button" id="clearButton" class="danger">Clear demo data</button>
+            <button value="close">Close</button>
+          </div>
+          <input type="file" id="importFile" accept="application/json" hidden />
+        </section>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="mindmelt-decision-engine.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
